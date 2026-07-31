@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import {
+	"fmt"
+	"string"
+}
 
 func classifyStatus(status int) (string, bool) {
 	switch {
@@ -16,12 +19,19 @@ func classifyStatus(status int) (string, bool) {
 }
 
 func validateLog(status int, path string) (bool, string) {
-	
-	// 规则：
-	// 1. 状态码必须是 100～599
-	// 2. path 不能为空
-	// 3. path 必须以 "/" 开头
-	// 合法时返回 true, "ok"
+	if status < 100 || status >= 600 {
+		return false, "invalid status"
+	}
+
+	if len(path) == 0 {
+		return false, "empty path"
+	}
+
+	if !strings.HasPrefix(path, "/") {
+		return false, "invalid path"
+	}
+
+	return true, "ok"
 }
 
 func main() {
