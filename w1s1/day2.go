@@ -1,9 +1,10 @@
 package main
 
-import {
+import (
 	"fmt"
-	"string"
-}
+	"strings"
+	"strconv"
+)
 
 func classifyStatus(status int) (string, bool) {
 	switch {
@@ -16,6 +17,21 @@ func classifyStatus(status int) (string, bool) {
 	default:
 		return "unknown", false
 	}
+}
+
+func validateLogLine(line string) (bool, string) {
+	fields := strings.Fields(line)
+
+	if len(fields) != 2 {
+		return false, "invalid log line"
+	}
+
+	status, err := strconv.Atoi(fields[0])
+	if err != nil {
+		return false, "invalid status"
+	}
+
+	return validateLog(status, fields[1])
 }
 
 func validateLog(status int, path string) (bool, string) {
@@ -34,24 +50,34 @@ func validateLog(status int, path string) (bool, string) {
 	return true, "ok"
 }
 
+/*
+200 /users true ok
+700 /admin false invalid status
+404  false empty path
+201 orders false invalid path
+*/
+
 func main() {
-	statuses := []int{200, 302, 707, 404, 700}
-	validCount := 0
 
-	for i, status := range statuses {
-		kind, ok := classifyStatus(status)
+	lines := []string{
+		"200 /users",
+		"abc /users",
+		"200",
+		"",
+		"404 /health",
+		"700 /admin",
+		"201 orders",
+		"200 /users extra",
+	}
+	var validCount int
 
-		if !ok {
-			fmt.Println(i, status, "invalid")
-			continue
-		}
+	for _, line := range lines {
+		valid, reason := validateLogLine(line)
+		fmt.Printf("%q -> %t, %s\n", line, valid, reason)
 
-		if kind == "success" {
+		if valid {
 			validCount++
 		}
-
-		fmt.Println(i, status, kind)
 	}
-
-	fmt.Println("validCount:", validCount)
+		fmt.Printf("valid count: %d\n", validCount)
 }
