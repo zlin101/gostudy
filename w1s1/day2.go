@@ -1,4 +1,4 @@
-package main
+package w1s1
 
 import (
 	"fmt"
