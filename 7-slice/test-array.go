@@ -1,3 +1,5 @@
+//go:build ignore
+
 package main
 
 import "fmt"
@@ -27,7 +29,7 @@ func testArray(arr [3]int) {
 	arr[2] = 300
 }
 
-func mainArray() {
+func main() {
 	typeVs()
 	arrayPass()
 }
