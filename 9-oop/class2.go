@@ -9,7 +9,7 @@ type Human struct {
 	Name string
 	Age  int
 }
-
+// Human类的方法定义
 func (this *Human) Eat() {
 	fmt.Println(this.Name, "human have to eat")
 }
